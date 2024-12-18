@@ -8,17 +8,26 @@ const entriesRouter = require('./routes/entries');
 const app = express();
 const port = 5000;
 
-// MongoDB Connection String
-const mongoUri = 'mongodb+srv://aniketabtech22:eishL0Jv37spYNKw@wall-of-fame.w3kdplf.mongodb.net/?retryWrites=true&w=majority&appName=wall-of-fame';
+// Correctly use the loaded environment variable
+const mongoUri = process.env.MONGODB_URI;  // Correct this line
 
-mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoUri)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Add a root route for the homepage or general API testing
+app.get('/', (req, res) => {
+  res.send('Welcome to the Wall of Fame API!');
+});
+
+// API Routes
 app.use('/entries', entriesRouter);
 
+// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
